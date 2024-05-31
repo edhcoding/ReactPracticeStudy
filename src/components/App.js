@@ -18,12 +18,14 @@ export default function App() {
     setItems(nextItems);
   };
 
-  const handleLoad = async () => {
-    const { reviews } = await getReviews();
+  const handleLoad = async (order) => {
+    const { reviews } = await getReviews(order);
     setItems(reviews);
   };
 
-  useEffect(() => handleLoad(), []);
+  useEffect(() => {
+    handleLoad(order);
+  }, [order]);
 
   return (
     <div>
