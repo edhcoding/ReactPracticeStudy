@@ -1,7 +1,6 @@
 import "./ReviewList.css";
 
 export default function ReviewList({ items, onDelete }) {
-  console.log(items);
   return (
     <ul>
       {items.map((item) => (
