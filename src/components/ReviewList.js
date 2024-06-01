@@ -12,8 +12,13 @@ export default function ReviewList({ items, onDelete }) {
   );
 }
 
+function formatDate(value) {
+  const date = new Date(value);
+  return `${date.getFullYear()}. ${date.getMonth() + 1}. ${date.getDate()}`;
+}
+
 function ReviewListItem({ item, onDelete }) {
-  const handleDeleteClick = () => onDelete(item.id);
+  const handleDeleteClick = () => onDelete(item.id); // 여기 item.id는 sort메서드로 오름차순 정리된 배열 item
 
   return (
     <div className="ReviewListItem">
@@ -27,9 +32,4 @@ function ReviewListItem({ item, onDelete }) {
       </div>
     </div>
   );
-}
-
-function formatDate(value) {
-  const date = new Date(value);
-  return `${date.getFullYear()}. ${date.getMonth() + 1}. ${date.getDate()}`;
 }
