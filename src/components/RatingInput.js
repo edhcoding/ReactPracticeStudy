@@ -1,8 +1,8 @@
-import { useState } from 'react';
-import Rating from './Rating';
-import './RatingInput.css';
+import { useState } from "react";
+import Rating from "./Rating";
+import "./RatingInput.css";
 
-function RatingInput({ name, value, onChange }) {
+export default function RatingInput({ name, value, onChange }) {
   const [rating, setRating] = useState(value);
 
   const handleSelect = (nextValue) => onChange(name, nextValue);
@@ -19,5 +19,3 @@ function RatingInput({ name, value, onChange }) {
     />
   );
 }
-
-export default RatingInput;
