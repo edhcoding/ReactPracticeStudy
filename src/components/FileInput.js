@@ -1,6 +1,8 @@
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function FileInput({ name, value, onChange }) {
+  const [preview, setPreview] = useState();
+
   const inputRef = useRef();
 
   const handleChange = (e) => {
@@ -14,8 +16,15 @@ export default function FileInput({ name, value, onChange }) {
     onChange(name, null);
   };
 
+  useEffect(() => {
+    if (!value) return;
+    setPreview(URL.createObjectURL(value));
+    // objectURL을 만들면 웹 브라우저는 메모리를 할당하고 파일에 해당하는 주소를 만들어 줌
+  }, [value]);
+
   return (
     <div>
+      <img src={preview} alt="이미지 미리보기" />
       <input type="file" onChange={handleChange} ref={inputRef} />
       {value && <button onClick={handleClearClick}>X</button>}
     </div>
