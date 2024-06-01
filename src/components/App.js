@@ -8,10 +8,8 @@ const LIMIT = 6;
 export default function App() {
   const [order, setOrder] = useState("createdAt");
   const [items, setItems] = useState([]);
-
   const [offset, setOffset] = useState(0);
   const [hasNext, setHasNext] = useState(false);
-
   const [isLoading, setIsLoading] = useState(false);
   const [loadingError, setLoadingError] = useState(null);
 
@@ -26,16 +24,6 @@ export default function App() {
     // 왼쪽의 item.id는 현재 요소의 id 속성, 오른쪽 id는 매개변수로 item.id가 들어옴 다른 item인데
     // 위에 items= {sortedItems} 에서 배열이 정리된후의 요소의 id 속성 - 이해한 바가 맞다면
   };
-
-  const handleLoadMore = () => {
-    handleLoad({ order, offset, limit: LIMIT });
-  };
-
-  useEffect(() => {
-    handleLoad({ order, offset: 0, limit: LIMIT });
-    // order가 변할때 마다 호출하려고 하기 때문에
-    // { order, offset: 0, limit: LIMIT } offset 값도 상태변수가 아니라 초기값을 로드하게 0으로 설정해줌
-  }, [order]);
 
   const handleLoad = async (options) => {
     // api 호출
@@ -62,13 +50,27 @@ export default function App() {
     setHasNext(paging.hasNext);
   };
 
+  const handleLoadMore = () => {
+    handleLoad({ order, offset, limit: LIMIT });
+  };
+
+  const handleSubmitSuccess = (review) => {
+    setItems((prevItems) => [review, ...prevItems]);
+  };
+
+  useEffect(() => {
+    handleLoad({ order, offset: 0, limit: LIMIT });
+    // order가 변할때 마다 호출하려고 하기 때문에
+    // { order, offset: 0, limit: LIMIT } offset 값도 상태변수가 아니라 초기값을 로드하게 0으로 설정해줌
+  }, [order]);
+
   return (
     <div>
       <div>
         <button onClick={handleNewestClick}>최신순</button>
         <button onClick={handleBestClick}>베스트순</button>
       </div>
-      <ReviewForm />
+      <ReviewForm onSubmitSuccess={handleSubmitSuccess} />
       <ReviewList items={sortedItems} onDelete={handleDelete} />
       {hasNext && (
         <button disabled={isLoading} onClick={handleLoadMore}>
