@@ -1,16 +1,17 @@
-import { useState } from "react";
-import FileInput from "./FileInput";
-import RatingInput from "./RatingInput";
-import "./ReviewForm.css";
+import { useState } from 'react';
+import useAsync from '../hooks/useAsync';
+import FileInput from './FileInput';
+import RatingInput from './RatingInput';
+import './ReviewForm.css';
 
 const INITIAL_VALUES = {
-  title: "",
+  title: '',
   rating: 0,
-  content: "",
+  content: '',
   imgFile: null,
 };
 
-export default function ReviewForm({
+function ReviewForm({
   initialValues = INITIAL_VALUES,
   initialPreview,
   onCancel,
@@ -18,8 +19,7 @@ export default function ReviewForm({
   onSubmitSuccess,
 }) {
   const [values, setValues] = useState(initialValues);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submittingError, setSubmittingError] = useState(null);
+  const [isSubmitting, submittingError, onSubmitAsync] = useAsync(onSubmit);
 
   const handleChange = (name, value) => {
     setValues((prevValues) => ({
@@ -36,21 +36,14 @@ export default function ReviewForm({
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData();
-    formData.append("title", values.title);
-    formData.append("rating", values.rating);
-    formData.append("content", values.content);
-    formData.append("imgFile", values.imgFile);
-    let result;
-    try {
-      setSubmittingError(null);
-      setIsSubmitting(true);
-      result = await onSubmit(formData);
-    } catch (error) {
-      setSubmittingError(error);
-      return;
-    } finally {
-      setIsSubmitting(false);
-    }
+    formData.append('title', values.title);
+    formData.append('rating', values.rating);
+    formData.append('content', values.content);
+    formData.append('imgFile', values.imgFile);
+
+    const result = await onSubmitAsync(formData);
+    if (!result) return;
+
     const { review } = result;
     setValues(INITIAL_VALUES);
     onSubmitSuccess(review);
@@ -83,3 +76,5 @@ export default function ReviewForm({
     </form>
   );
 }
+
+export default ReviewForm;

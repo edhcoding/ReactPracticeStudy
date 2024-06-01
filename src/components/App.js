@@ -1,41 +1,33 @@
-import { useEffect, useState } from "react";
-import { createReview, deleteReview, getReviews, updateReview } from "../api";
-import ReviewList from "./ReviewList";
-import ReviewForm from "./ReviewForm";
+import { useEffect, useState } from 'react';
+import ReviewList from './ReviewList';
+import ReviewForm from './ReviewForm';
+import { createReview, deleteReview, getReviews, updateReview } from '../api';
+import useAsync from '../hooks/useAsync';
 
 const LIMIT = 6;
 
-export default function App() {
-  const [order, setOrder] = useState("createdAt");
+function App() {
+  const [order, setOrder] = useState('createdAt');
   const [offset, setOffset] = useState(0);
   const [hasNext, setHasNext] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [loadingError, setLoadingError] = useState(null);
+  const [isLoading, loadingError, getReviewsAsync] = useAsync(getReviews);
   const [items, setItems] = useState([]);
   const sortedItems = items.sort((a, b) => b[order] - a[order]);
 
-  const handleNewestClick = () => setOrder("createdAt");
+  const handleNewestClick = () => setOrder('createdAt');
 
-  const handleBestClick = () => setOrder("rating");
+  const handleBestClick = () => setOrder('rating');
 
   const handleDelete = async (id) => {
-    const result = deleteReview(id);
+    const result = await deleteReview(id);
     if (!result) return;
+
     setItems((prevItems) => prevItems.filter((item) => item.id !== id));
   };
 
   const handleLoad = async (options) => {
-    let result;
-    try {
-      setLoadingError(null);
-      setIsLoading(true);
-      result = await getReviews(options);
-    } catch (error) {
-      setLoadingError(error);
-      return;
-    } finally {
-      setIsLoading(false);
-    }
+    const result = await getReviewsAsync(options);
+    if (!result) return;
 
     const { paging, reviews } = result;
     if (options.offset === 0) {
@@ -58,7 +50,6 @@ export default function App() {
   const handleUpdateSuccess = (review) => {
     setItems((prevItems) => {
       const splitIdx = prevItems.findIndex((item) => item.id === review.id);
-      // findIndex 조건에 맞는 값의 인덱스 값을 반환함
       return [
         ...prevItems.slice(0, splitIdx),
         review,
@@ -85,7 +76,7 @@ export default function App() {
         items={sortedItems}
         onDelete={handleDelete}
         onUpdate={updateReview}
-        handleUpdateSuccess={handleUpdateSuccess}
+        onUpdateSuccess={handleUpdateSuccess}
       />
       {hasNext && (
         <button disabled={isLoading} onClick={handleLoadMore}>
@@ -96,3 +87,5 @@ export default function App() {
     </div>
   );
 }
+
+export default App;
