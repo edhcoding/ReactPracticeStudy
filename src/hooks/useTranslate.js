@@ -1,5 +1,6 @@
 import { useLocale } from "../contexts/LocaleContext";
 
+
 const dict = {
   ko: {
     "confirm button": "확인",
