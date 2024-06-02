@@ -9,13 +9,14 @@ export default function ReviewList({
   onUpdate,
   onUpdateSuccess,
 }) {
-  const [editingId, setEditingId] = useState(null);
+  const [editingId, setEditingId] = useState(null); // 수정할 값의 id 상태값
 
-  const handleCancel = () => setEditingId(null);
+  const handleCancel = () => setEditingId(null); // 이벤트 핸들러 => 취소 누르면 다시 원래대로 돌아가기
 
   return (
     <ul>
       {items.map((item) => {
+        // items는 sort로 정렬된 아이템의 값
         if (item.id === editingId) {
           const { id, imgUrl, title, rating, content } = item;
           const initialValues = { title, rating, content, imgFile: null };

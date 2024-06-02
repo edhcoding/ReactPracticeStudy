@@ -43,6 +43,7 @@ export async function deleteReview(id) {
     method: "DELETE",
   });
   if (!response.ok) {
+    // ok 속성은 응답이 성공했는지 여부(200-299 범위의 상태)를 불리언 값으로 나타냄
     throw new Error("리뷰를 삭제하는데 실패했습니다.");
   }
   const body = await response.json();
