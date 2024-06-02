@@ -3,6 +3,8 @@ import { createReview, deleteReview, updateReview, getReviews } from "../api";
 import useAsync from "../hooks/useAsync";
 import ReviewList from "./ReviewList";
 import ReviewForm from "./ReviewForm";
+import LocaleSelect from "./LocaleSelect";
+import LocaleContext from "../contexts/LocaleContext";
 
 const LIMIT = 6;
 
@@ -25,6 +27,7 @@ export default function App() {
   const [hasNext, setHasNext] = useState(false); // 다음값 있는지 여부
   const [isLoading, loadingError, getReviewsAsync] = useAsync(getReviews);
   // 커스텀 훅 - pending, error, wrappedFunction
+  const [locale, setLocale] = useState("ko");
 
   const sortedItems = items.sort((a, b) => b[order] - a[order]); // 내림차순 정렬
 
@@ -104,27 +107,30 @@ export default function App() {
   // 이때 handleLoad함수도 다시 만들기 때문에 의존성 배열의 값이 달라짐 그래서 무한루프 발생
 
   return (
-    <div>
+    <LocaleContext.Provider value={locale}>
       <div>
-        <button onClick={handleNewestClick}>최신순</button>
-        <button onClick={handleBestClick}>베스트순</button>
+        <LocaleSelect value={locale} onChange={setLocale} />
+        <div>
+          <button onClick={handleNewestClick}>최신순</button>
+          <button onClick={handleBestClick}>베스트순</button>
+        </div>
+        <ReviewForm
+          onSubmit={createReview}
+          onSubmitSuccess={handleCreateSuccess}
+        />
+        <ReviewList
+          items={sortedItems}
+          onDelete={handleDelete}
+          onUpdate={updateReview}
+          onUpdateSuccess={handleUpdateSuccess}
+        />
+        {hasNext && (
+          <button disabled={isLoading} onClick={handleLoadMore}>
+            더 보기
+          </button>
+        )}
+        {loadingError?.message && <span>{loadingError.message}</span>}
       </div>
-      <ReviewForm
-        onSubmit={createReview}
-        onSubmitSuccess={handleCreateSuccess}
-      />
-      <ReviewList
-        items={sortedItems}
-        onDelete={handleDelete}
-        onUpdate={updateReview}
-        onUpdateSuccess={handleUpdateSuccess}
-      />
-      {hasNext && (
-        <button disabled={isLoading} onClick={handleLoadMore}>
-          더 보기
-        </button>
-      )}
-      {loadingError?.message && <span>{loadingError.message}</span>}
-    </div>
+    </LocaleContext.Provider>
   );
 }
