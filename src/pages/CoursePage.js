@@ -1,4 +1,4 @@
-import { Navigate, useParams } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { addWishlist, getCourseBySlug } from "../api";
 import Button from "../components/Button";
 import Container from "../components/Container";
@@ -8,6 +8,8 @@ import getCourseColor from "../utils/getCourseColor";
 import styles from "./CoursePage.module.css";
 
 function CoursePage() {
+  const navigate = useNavigate();
+  // 코드를 사용해 페이지를 이동해야할 때는 useNavigate사용
   const { courseSlug } = useParams();
   // useParams가 리턴하는 객체에는 현재 경로의 파라미터들이 저장되어 있음
   const course = getCourseBySlug(courseSlug);
@@ -23,6 +25,7 @@ function CoursePage() {
 
   const handleAddWishlistClick = () => {
     addWishlist(course?.slug);
+    navigate("/wishlist");
   };
 
   return (
