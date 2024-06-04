@@ -15,7 +15,7 @@ function Main() {
           <Route index element={<HomePage />} />
           <Route path="courses">
             <Route index element={<CourseListPage />} />
-            <Route path="react-frontend-development" element={<CoursePage />} />
+            <Route path=":courseSlug" element={<CoursePage />} />
           </Route>
           <Route path="wishlist" element={<WishlistPage />} />
         </Route>
