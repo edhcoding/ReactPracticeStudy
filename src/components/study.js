@@ -8,7 +8,7 @@
 
 // 예시
 
-{
+// {
   /* <form class="signin-form">
   <label class="signin-form__label">
     Email
